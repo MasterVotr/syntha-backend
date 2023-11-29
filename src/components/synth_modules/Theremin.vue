@@ -111,7 +111,7 @@ export default {
             }
             //thanks random guy from stackoverflow
             //this was a pain in the ass to code
-            var rect = event.currentTarget.getBoundingClientRect();
+            var rect = event.target.getBoundingClientRect();
             this.thereminIndicator.x = event.pageX - rect.left;
             this.thereminIndicator.y = event.pageY - rect.top;
             if(this.thereminIndicator.y >300){
@@ -132,6 +132,7 @@ export default {
         //PORT FUNCTIONS (EVERY MODULE NEEDS TO HAVE THESE!)
         handlePortClick(portID, x, y) {
             console.log("parent", this.$parent.moduleId)
+            console.log(this.$parent)
             this.$emit("portClicked", this.$parent.moduleId, portID, x, y);
         },
 

@@ -152,8 +152,7 @@ export default {
         </div>
     </div>
 </template>
-    @portClicked="handleModulePortClick"
-    
+
 <style scoped>
     .module {
         /*

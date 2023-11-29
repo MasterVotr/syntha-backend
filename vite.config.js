@@ -12,5 +12,15 @@ export default defineConfig({
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url))
     }
-  }
+  },
+  /*
+  build:{
+    minify: false,
+    beautify: true,
+    sourcemap: true,
+  },
+  esbuild:{
+    minify: false,
+  },
+  */
 })

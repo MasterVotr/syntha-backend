@@ -6,7 +6,7 @@
     <div class="square" :style="{ backgroundColor: squareColor }"
     >
         <div class="circle" :style="{ backgroundColor: circleColor, borderColor: circleBorderColor }">
-            <div class="innerCircle" :ref=this.circleRef></div>
+            <div class="innerCircle" :id="(this.circleRef || generateDefaultRef)" :ref="this.circleRef || generateDefaultRef"></div>
         </div>
     </div>
     </div>
@@ -51,15 +51,22 @@ export default {
         this.squareColor = this.normalColor;
         if(this.ID != null)
         this.portID = this.ID;
-        this.parentModuleID = this.modId;
-        this.circleRef = "innerCircle"+this.parentModuleID+this.portID; 
+        this.parentModuleID = this.modId; 
+        this.circleRef = "innerCircle" + this.parentModuleID + this.portID;
+    },
+    computed: {
+        generateDefaultRef() {
+            // Generate the default ref based on your criteria
+            return "innerCircle" + this.parentModuleID + this.portID; 
+        },
     },
     methods:{
         handlePortMouseOver(){
             this.squareColor = this.hoverColor;
             //we only wish to handle this if the port accepts inputs
             if (this.portType == "IN") {
-                const innerCircle = this.$refs[this.circleRef];
+                //const innerCircle = this.$refs[this.circleRef];
+                const innerCircle = document.getElementById(this.circleRef);
                 const rect = innerCircle.getBoundingClientRect();
 
                 // Calculate the center position
@@ -77,15 +84,16 @@ export default {
         handlePortMouseClick(event){
             //connections go from OUT to IN ports ONLY
             if(this.portType=="OUT"){
-                const innerCircle = this.$refs[this.circleRef];
+                //const innerCircle = this.$refs[this.circleRef];
+                const innerCircle = document.getElementById(this.circleRef);
                 const rect = innerCircle.getBoundingClientRect();
-                
                 // Calculate the center position
                 const centerX = rect.left + rect.width / 2;
                 const centerY = rect.top + rect.height / 2;
                 
                 //event.clientX, event.clientY
                 this.$emit("portClicked", this.portID, centerX, centerY);
+                
                 window.addEventListener("mousemove", this.handlePortMouseMove);
                 window.addEventListener("mouseup", this.handlePortStopMove);
             }
@@ -96,8 +104,9 @@ export default {
         },
         handlePortStopMove(event) {
             //console.log(event.target)
-            console.log("-----ref-----", this.$refs[this.circleRef])
-            const innerCircle = this.$refs[this.circleRef];
+            //console.log("-----ref-----", this.$refs[this.circleRef])
+            //const innerCircle = this.$refs[this.circleRef];
+            const innerCircle = document.getElementById(this.circleRef);
             //console.log(innerCircle)
             const rect = innerCircle.getBoundingClientRect();
 

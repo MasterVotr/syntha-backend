@@ -32,8 +32,6 @@ import * as Tone from 'tone'
                     :outputPorts="module.outputPorts" :createdCoordsX="module.createdCoordsX"
                     :createdCoordsY="module.createdCoordsY" :moduleId="module.id"
                     :moduleType="module.type"
-                    @start-dragging-port="startPortDragging" 
-                    @handle-port-drag="handlePortDragging" @stop-dragging-port="stopPortDragging" 
                     @contextmenu.prevent="setVisibleContextMenu($event)"
                     @module-moved="moduleMovedUpdate" @remove-module="removeModule"
                     :style="{
@@ -84,8 +82,8 @@ import * as Tone from 'tone'
         <!-- demo clutter -->
          
         <svg class="visualConnections">
-            <line v-if="(isDragging())" :x1="this.dragPortPositionX" :y1="this.dragPortPositionY" :x2="this.mouseCurrentX"
-                :y2="this.mouseCurrentY" stroke="blue" stroke-width="2" />
+            <line v-if="(isDragging())" :x1="dragPortPositionX" :y1="dragPortPositionY" :x2="mouseCurrentX"
+                :y2="mouseCurrentY" stroke="blue" stroke-width="2" />
         </svg>
     
         <svg class="visualConnections"  v-for="(item,index) in connections" :key="index">
@@ -389,8 +387,11 @@ export default {
             this.dragPortPositionX = posX;
             this.dragPortPositionY = posY;
             this.isDraggingPort = true;
+            console.log("Starting")
+            console.log(this.dragPortPositionX, this.dragPortPositionY)
         },
         handlePortDragging(posX, posY) {
+            console.log("handling")
             if(!this.isDraggingPort){
                 return;
             }
@@ -514,7 +515,7 @@ export default {
                 //console.log(event.clientX, event.clientY)
             }
             //console.log(Boolean(event.originalTarget.closest("modulesScaffold")))
-            if (event.originalTarget.parentElement.classList.contains("module")){
+            if (event.target.parentElement.classList.contains("module")){
                 //manage the removal of modules here
             }
             console.log(event);
@@ -612,7 +613,8 @@ export default {
         clickedMainDiv(event, type){
             //if the class of the event original target is not mainDiv
             //then do nothing
-            if (event.originalTarget.classList.contains("mainDiv") == false){
+            console.log(event)
+            if (event.target.classList.contains("mainDiv") == false){
                 //console.log("non duce")
                 return;
             }
@@ -620,13 +622,13 @@ export default {
             this.canMovePlayground = type; //type is a boolean
             if (type == true){
                 //
-                event.originalTarget.classList.add("maindiv-grabbed")
+                event.target.classList.add("maindiv-grabbed")
                 this.playGroundMoveInitialX = event.clientX;
                 this.playGroundMoveInitialY = event.clientY;
             }
             else{
                 //
-                event.originalTarget.classList.remove("maindiv-grabbed")
+                event.target.classList.remove("maindiv-grabbed")
             }
 
         },
