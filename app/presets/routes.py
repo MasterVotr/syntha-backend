@@ -40,7 +40,8 @@ def create():
 
     preset_id = new_preset.id
     return make_response(
-        "Preset successfully created/updated", HTTPStatus.OK, {"preset_id": preset_id}
+        jsonify({"preset_id": preset_id, "msg": "Preset successfully created/updated"}),
+        HTTPStatus.OK,
     )
 
 
