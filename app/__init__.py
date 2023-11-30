@@ -1,4 +1,5 @@
 from flask import Flask
+from flask_cors import CORS
 
 from app.models.user import User
 from config import Config
@@ -12,6 +13,7 @@ def create_app(config_class=Config):
     # Initialize Flask extension
     db.init_app(app)
     bcrypt.init_app(app)
+    CORS(app)
     login_manager.init_app(app)
     login_manager.login_view = "login"
 
