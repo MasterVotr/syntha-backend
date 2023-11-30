@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <span class="title"><h1>{% block title %} The users Page {% endblock %}</h1></span>
+    <div class="content">
+        {% for user in users %}
+            <div class="user">
+                <p><b>#{{ user.id }}</b></p>
+                <p class="title">
+                    <b>
+                        {{ user.username }}
+                    </b>
+                </p>
+                <hr>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}

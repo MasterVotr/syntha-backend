@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <span class="title"><h1>{% block title %} The presets Page {% endblock %}</h1></span>
+    <div class="content">
+        {% for preset in presets %}
+            <div class="preset">
+                <p><b>#{{ preset.id }}</b></p>
+                <p class="title">
+                    <b>
+                        {{ preset.name }}
+                    </b>
+                </p>
+                <p>
+                    {{ preset.data }}
+                </p>
+                <hr>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}

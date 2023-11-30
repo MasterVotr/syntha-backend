@@ -1,9 +1,0 @@
-{
-    "BasicOsc":"Oscillator",
-    "AudioOut":"AudioOut",
-    "MidiIn":"MidiIn",
-    "Theremin":"Theremin",
-    "Reverb":"Reverb",
-    "VCA":"Gain",
-    "Filter":"Filter"
-}
