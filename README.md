@@ -1,39 +1,28 @@
-# SynthA! | A Modular Synth for the Web Generation
+# SynthA! | A Modular Synth for the Web Generation | Backend
 ## Francesco Colotti, Jakub Votrubec, Roos Zoutman
 ## CS-E4400 - Design of WWW Services (23/24)
-Project intro here.
 
-Some random informations:
-* I (Francesco) have decided that for simplicity all nodes accept only one input per port (except for audio out nodes) and only one output per port. This is to keep the implementations simple, and also because in practice, even with a physical modular synthesiser, it's rare to send the same output port to two input ports (there are precise cables to do that). To account for this, I'll think about adding an "output duplicator" block.  
+### [Frontend repo](https://github.com/thepihen/syntha)
 
-Key challenges here:
+### Some random information:
 
-Key learning moments here:
-
-
+### Key challenges and learning moments:
+- learning new technologies (Vue js, Tone js, Flask)
+- learing how and where to deploy out webapp (frontend - github io, backend - Heroku)
 
 ## Recommended IDE Setup
-
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur) + [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin).
-
-## Customize configuration
-
-See [Vite Configuration Reference](https://vitejs.dev/config/).
+- [PyCharm](https://www.jetbrains.com/pycharm/)
+- [Python venv](https://docs.python.org/3/library/venv.html)
+- command line
+- Python libraries (in requirements.txt)
 
 ## Project Setup
 
+### production
 ```sh
-npm install
+gunicorn 'app:create_app()'
 ```
-
-### Compile and Hot-Reload for Development
-
+### development
 ```sh
-npm run dev
-```
-
-### Compile and Minify for Production
-
-```sh
-npm run build
+flask run
 ```
