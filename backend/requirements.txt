@@ -6,6 +6,7 @@ click==8.1.7
 ERPpeek==1.7.1
 Flask==3.0.0
 Flask-Bcrypt==1.0.1
+Flask-Cors==4.0.0
 flask-erppeek==1.0.1
 Flask-Login==0.6.3
 flask-login-openerp==0.7.0
