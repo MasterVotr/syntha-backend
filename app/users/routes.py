@@ -33,9 +33,8 @@ def register():
         db.session.commit()
         login_user(new_user)
         return make_response(
-            f"Successfully registered and logged in as {username}",
+            jsonify({"user_id": new_user.id}),
             HTTPStatus.OK,
-            {"user_id": new_user.id},
         )
     else:
         return """
@@ -55,7 +54,7 @@ def login():
         user = User.query.filter_by(username=username).first()
         if user and bcrypt.check_password_hash(user.password, password):
             login_user(user)
-            return make_response(f"Successfully loggen in as {username}", HTTPStatus.OK)
+            return make_response(jsonify({"user_id": user.id}), HTTPStatus.OK)
         else:
             return make_response("Login failed", HTTPStatus.BAD_REQUEST)
     else:
