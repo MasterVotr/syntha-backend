@@ -1,0 +1,4 @@
+- adapt CORS to only accept requests from github.io
+- move logic to services
+	- implemnet services - singleton - dependency injection
+- erase unused endpoints
