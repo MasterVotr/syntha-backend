@@ -26,7 +26,11 @@ def create():
     name = metadata["preset_name"]
     creator_id = metadata["creator_id"]
     if User.query.filter_by(id=creator_id).first() is None:
-        return make_response("Creator user not found", HTTPStatus.NOT_FOUND)
+        result = {
+            "msg": "Creator user not found",
+            "status": HTTPStatus.NOT_FOUND
+        }
+        return make_response(jsonify(result), result["status"])
     public = metadata["public"]
 
     new_preset = Preset()
@@ -39,25 +43,42 @@ def create():
     db.session.commit()
 
     preset_id = new_preset.id
-    return make_response(
-        jsonify({"preset_id": preset_id}),
-        HTTPStatus.OK,
-    )
+    result = {
+        "result": {
+            "preset_id": preset_id
+        },
+        "status": HTTPStatus.OK
+    }
+    return make_response(jsonify(result), result["status"])
 
 
 @bp.route("/<preset_id>", methods=["GET", "DELETE", "POST"])
 def modify_preset(preset_id):
     preset = Preset.query.filter_by(id=preset_id).first()
     if preset is None:
-        return make_response("Preset not found", HTTPStatus.NOT_FOUND)
+        result = {
+            "msg": "Preset not found",
+            "status": HTTPStatus.NOT_FOUND
+        }
+        return make_response(jsonify(result), result["status"])
 
     if request.method == "GET":
-        return make_response(jsonify(preset), HTTPStatus.OK)
+        result = {
+            "result": {
+                "preset": preset
+            },
+            "status": HTTPStatus.OK
+        }
+        return make_response(jsonify(result), result["status"])
 
     elif request.method == "DELETE":
         db.session.delete(preset)
         db.session.commit()
-        return make_response("Successfully deleted preset", HTTPStatus.OK)
+        result = {
+            "msg": "Successfully deleted preset",
+            "status": HTTPStatus.OK
+        }
+        return make_response(jsonify(result), result["status"])
 
     elif request.method == "POST":
         request_data = request.get_json()
@@ -68,13 +89,21 @@ def modify_preset(preset_id):
         if request_data.get("public"):
             preset.public = int(request_data.get("public"))
         db.session.commit()
-        return make_response("Successfully updated preset", HTTPStatus.OK)
+        result = {
+            "msg": "Successfully updated preset",
+            "status": HTTPStatus.OK
+        }
+        return make_response(jsonify(result), result["status"])
 
 
 @bp.route("/all", methods=["GET"])
 def get_presets():
     presets = Preset.query.all()
-    return make_response(jsonify(presets), HTTPStatus.OK)
+    result = {
+        "result": presets,
+        "status": HTTPStatus.OK
+    }
+    return make_response(jsonify(result), result["status"])
 
 
 @bp.route("/public", methods=["GET"])
@@ -84,4 +113,8 @@ def get_public_presets():
     for preset in presets:
         if preset.public:
             public_presets.append(preset)
-    return make_response(jsonify(public_presets), HTTPStatus.OK)
+    result = {
+        "result": public_presets,
+        "status": HTTPStatus.OK
+    }
+    return make_response(jsonify(result), result["status"])

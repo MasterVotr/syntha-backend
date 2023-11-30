@@ -15,89 +15,97 @@ def index():
     return render_template("users/index.html", users=users)
 
 
-@bp.route("/register", methods=["GET", "POST"])
+@bp.route("/register", methods=["POST"])
 def register():
-    if request.method == "POST":
-        # username = request.form.get("username")
-        # password = request.form.get("password")
+    request_data = request.get_json()
+    username = request_data.get('username')
+    password = request_data.get('password')
 
-        request_data = request.get_json()
-        username = request_data.get('username')
-        password = request_data.get('password')
+    print(f"username: {username}, password: {password}")
 
-        print(f"username: {username}, password: {password}")
-
-        if User.query.filter_by(username=username).first():
-            return make_response(
-                "Failed: username already exists", HTTPStatus.BAD_REQUEST
-            )
-        hashed_password = bcrypt.generate_password_hash(password)
-        new_user = User()
-        new_user.username = username
-        new_user.password = hashed_password
-        new_user.seenTutorial = False
-        db.session.add(new_user)
-        db.session.commit()
-        login_user(new_user)
-        return make_response(
-            jsonify({"user_id": new_user.id}),
-            HTTPStatus.OK,
-        )
-    else:
-        return """
-                  <form method="POST">
-                      <div><label>username: <input type="text" name="username"></label></div>
-                      <div><label>password: <input type="password" name="password"></label></div>
-                      <input type="submit" value="Submit">
-                  </form>"""
+    if User.query.filter_by(username=username).first():
+        result = {
+            "msg": "Failed: username already exists",
+            "status": HTTPStatus.BAD_REQUEST
+        }
+        return make_response(jsonify(result), result["status"])
+    hashed_password = bcrypt.generate_password_hash(password)
+    new_user = User()
+    new_user.username = username
+    new_user.password = hashed_password
+    new_user.seenTutorial = False
+    db.session.add(new_user)
+    db.session.commit()
+    login_user(new_user)
+    result = {
+        "user_id": new_user.id,
+        "status": HTTPStatus.OK
+    }
+    return make_response(jsonify(result), result["status"])
 
 
-@bp.route("/login", methods=["GET", "POST"])
+@bp.route("/login", methods=["POST"])
 def login():
-    if request.method == "POST":
-        # username = request.form.get("username")
-        # password = request.form.get("password")
-        request_data = request.get_json()
-        username = request_data.get('username')
-        password = request_data.get('password')
+    request_data = request.get_json()
+    username = request_data.get('username')
+    password = request_data.get('password')
 
-        print(f"username: {username}, password: {password}")
+    print(f"username: {username}, password: {password}")
 
-        user = User.query.filter_by(username=username).first()
-        if user and bcrypt.check_password_hash(user.password, password):
-            login_user(user)
-            return make_response(jsonify({"user_id": user.id}), HTTPStatus.OK)
-        else:
-            return make_response("Login failed", HTTPStatus.BAD_REQUEST)
+    user = User.query.filter_by(username=username).first()
+    if user and bcrypt.check_password_hash(user.password, password):
+        login_user(user)
+        result = {
+            "result": {
+                "user_id": user.id
+            },
+            "status": HTTPStatus.OK
+        }
+        return make_response(jsonify(result), result["status"])
     else:
-        return """
-                      <form method="POST">
-                          <div><label>username: <input type="text" name="username"></label></div>
-                          <div><label>password: <input type="password" name="password"></label></div>
-                          <input type="submit" value="Submit">
-                      </form>"""
+        result = {
+            "msg": "Login failed",
+            "status": HTTPStatus.BAD_REQUEST
+        }
+        return make_response(jsonify(result), result["status"])
 
 
 @bp.route("/logout", methods=["GET"])
 def logout():
     logout_user()
-    return make_response("Successfully logged out", HTTPStatus.OK)
+    result = {
+        "msg": "Successfully logged out",
+        "status": HTTPStatus.OK
+    }
+    return make_response(jsonify(result), result["status"])
 
 
 @bp.route("/<int:user_id>", methods=["GET", "DELETE", "POST"])
 def update_user(user_id):
     user = User.query.filter_by(id=user_id).first()
     if user is None:
-        return make_response("User not found", HTTPStatus.NOT_FOUND)
+        result = {
+            "msg": "user_id not found",
+            "status": HTTPStatus.NOT_FOUND
+        }
+        return make_response(jsonify(result), result["status"])
 
     if request.method == "GET":
         user_result = extract_user_data(user)
-        return make_response(jsonify(user_result), HTTPStatus.OK)
+        result = {
+            "result": user_result,
+            "status": HTTPStatus.OK
+        }
+        return make_response(jsonify(result), HTTPStatus.OK)
 
     elif request.method == "DELETE":
         db.session.delete(user)
         db.session.commit()
-        return make_response("Successfully deleted user", HTTPStatus.OK)
+        result = {
+            "msg": "Successfully deleted user",
+            "status": HTTPStatus.OK
+        }
+        return make_response(jsonify(result), result["status"])
 
     elif request.method == "POST":
         request_data = request.get_json()
@@ -106,16 +114,22 @@ def update_user(user_id):
                 User.query.filter_by(id=request_data.get("username")).first()
                 is not None
             ):
-                return make_response(
-                    "Failed: username already exists", HTTPStatus.BAD_REQUEST
-                )
+                result = {
+                    "msg": "Failed: username already exists",
+                    "status": HTTPStatus.BAD_REQUEST
+                }
+                return make_response(jsonify(result), result["status"])
             user.username = request_data.get("username")
         if request_data.get("password"):
             user.password = request_data.get("password")
         if request_data.get("seen_tutorial"):
             user.seen_tutorial = request_data.get("seen_tutorial")
         db.session.commit()
-        return make_response("Successfully updated user", HTTPStatus.OK)
+        result = {
+            "msg": "Successfully updated user",
+            "status": HTTPStatus.OK
+        }
+        return make_response(jsonify(result), result["status"])
 
 
 @bp.route("/all", methods=["GET"])
@@ -124,7 +138,11 @@ def get_users():
     user_data = []
     for user in users:
         user_data.append(extract_user_data(user))
-    return make_response(jsonify(user_data), HTTPStatus.OK)
+    result = {
+        "result": user_data,
+        "status": HTTPStatus.OK
+    }
+    return make_response(jsonify(result), result["status"])
 
 
 @bp.route("/<int:user_id>/presets", methods=["GET"])
@@ -134,7 +152,11 @@ def get_user_presets(user_id):
     for preset in presets:
         if int(preset.creator_id) == user_id:
             user_presets.append(preset)
-    return make_response(jsonify(user_presets), HTTPStatus.OK)
+    result = {
+        "result": user_presets,
+        "status": HTTPStatus.OK
+    }
+    return make_response(jsonify(result), result["status"])
 
 
 def extract_user_data(user: User):
