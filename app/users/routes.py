@@ -18,8 +18,15 @@ def index():
 @bp.route("/register", methods=["GET", "POST"])
 def register():
     if request.method == "POST":
-        username = request.form.get("username")
-        password = request.form.get("password")
+        # username = request.form.get("username")
+        # password = request.form.get("password")
+
+        request_data = request.get_json()
+        username = request_data.get('username')
+        password = request_data.get('password')
+
+        print(f"username: {username}, password: {password}")
+
         if User.query.filter_by(username=username).first():
             return make_response(
                 "Failed: username already exists", HTTPStatus.BAD_REQUEST
@@ -48,8 +55,13 @@ def register():
 @bp.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == "POST":
-        username = request.form.get("username")
-        password = request.form.get("password")
+        # username = request.form.get("username")
+        # password = request.form.get("password")
+        request_data = request.get_json()
+        username = request_data.get('username')
+        password = request_data.get('password')
+
+        print(f"username: {username}, password: {password}")
 
         user = User.query.filter_by(username=username).first()
         if user and bcrypt.check_password_hash(user.password, password):
