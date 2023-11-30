@@ -19,7 +19,7 @@ def index():
 
 @bp.route("/new", methods=["POST"])
 def create():
-    request_data = request.get_json()
+    request_data = request.get_json()["preset"]
     print(request_data)
     metadata = request_data["metadata"]
     data = request_data["data"]
