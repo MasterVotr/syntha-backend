@@ -80,11 +80,7 @@ def update_user(user_id):
         return make_response("User not found", HTTPStatus.NOT_FOUND)
 
     if request.method == "GET":
-        user_result = {
-            "id": user.id,
-            "username": user.username,
-            "seen_tutorial": user.seen_tutorial,
-        }
+        user_result = extract_user_data(user)
         return make_response(jsonify(user_result), HTTPStatus.OK)
 
     elif request.method == "DELETE":
@@ -114,7 +110,10 @@ def update_user(user_id):
 @bp.route("/all", methods=["GET"])
 def get_users():
     users = User.query.all()
-    return make_response(jsonify(users), HTTPStatus.OK)
+    user_data = []
+    for user in users:
+        user_data.append(extract_user_data(user))
+    return make_response(jsonify(user_data), HTTPStatus.OK)
 
 
 @bp.route("/<int:user_id>/presets", methods=["GET"])
@@ -125,3 +124,11 @@ def get_user_presets(user_id):
         if int(preset.creator_id) == user_id:
             user_presets.append(preset)
     return make_response(jsonify(user_presets), HTTPStatus.OK)
+
+
+def extract_user_data(user: User):
+    return {
+        "id": user.id,
+        "username": user.username,
+        "seen_tutorial": user.seen_tutorial,
+    }
