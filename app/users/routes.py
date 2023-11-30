@@ -18,13 +18,13 @@ def index():
 @bp.route("/register", methods=["POST"])
 def register():
     request_data = request.get_json()
-    username = request_data.get('username')
-    password = request_data.get('password')
+    username = request_data.get("username")
+    password = request_data.get("password")
 
     if User.query.filter_by(username=username).first():
         result = {
             "msg": "Failed: username already exists",
-            "status": HTTPStatus.BAD_REQUEST
+            "status": HTTPStatus.BAD_REQUEST,
         }
         return make_response(jsonify(result), result["status"])
     hashed_password = bcrypt.generate_password_hash(password)
@@ -35,44 +35,30 @@ def register():
     db.session.add(new_user)
     db.session.commit()
     login_user(new_user)
-    result = {
-        "user_id": new_user.id,
-        "status": HTTPStatus.OK
-    }
+    result = {"user_id": new_user.id, "status": HTTPStatus.OK}
     return make_response(jsonify(result), result["status"])
 
 
 @bp.route("/login", methods=["POST"])
 def login():
     request_data = request.get_json()
-    username = request_data.get('username')
-    password = request_data.get('password')
+    username = request_data.get("username")
+    password = request_data.get("password")
 
     user = User.query.filter_by(username=username).first()
     if user and bcrypt.check_password_hash(user.password, password):
         login_user(user)
-        result = {
-            "result": {
-                "user_id": user.id
-            },
-            "status": HTTPStatus.OK
-        }
+        result = {"result": {"user_id": user.id}, "status": HTTPStatus.OK}
         return make_response(jsonify(result), result["status"])
     else:
-        result = {
-            "msg": "Login failed",
-            "status": HTTPStatus.BAD_REQUEST
-        }
+        result = {"msg": "Login failed", "status": HTTPStatus.BAD_REQUEST}
         return make_response(jsonify(result), result["status"])
 
 
 @bp.route("/logout", methods=["GET"])
 def logout():
     logout_user()
-    result = {
-        "msg": "Successfully logged out",
-        "status": HTTPStatus.OK
-    }
+    result = {"msg": "Successfully logged out", "status": HTTPStatus.OK}
     return make_response(jsonify(result), result["status"])
 
 
@@ -80,27 +66,18 @@ def logout():
 def update_user(user_id):
     user = User.query.filter_by(id=user_id).first()
     if user is None:
-        result = {
-            "msg": "user_id not found",
-            "status": HTTPStatus.NOT_FOUND
-        }
+        result = {"msg": "user_id not found", "status": HTTPStatus.NOT_FOUND}
         return make_response(jsonify(result), result["status"])
 
     if request.method == "GET":
         user_result = extract_user_data(user)
-        result = {
-            "result": user_result,
-            "status": HTTPStatus.OK
-        }
+        result = {"result": user_result, "status": HTTPStatus.OK}
         return make_response(jsonify(result), HTTPStatus.OK)
 
     elif request.method == "DELETE":
         db.session.delete(user)
         db.session.commit()
-        result = {
-            "msg": "Successfully deleted user",
-            "status": HTTPStatus.OK
-        }
+        result = {"msg": "Successfully deleted user", "status": HTTPStatus.OK}
         return make_response(jsonify(result), result["status"])
 
     elif request.method == "POST":
@@ -112,7 +89,7 @@ def update_user(user_id):
             ):
                 result = {
                     "msg": "Failed: username already exists",
-                    "status": HTTPStatus.BAD_REQUEST
+                    "status": HTTPStatus.BAD_REQUEST,
                 }
                 return make_response(jsonify(result), result["status"])
             user.username = request_data.get("username")
@@ -121,10 +98,7 @@ def update_user(user_id):
         if request_data.get("seen_tutorial"):
             user.seen_tutorial = request_data.get("seen_tutorial")
         db.session.commit()
-        result = {
-            "msg": "Successfully updated user",
-            "status": HTTPStatus.OK
-        }
+        result = {"msg": "Successfully updated user", "status": HTTPStatus.OK}
         return make_response(jsonify(result), result["status"])
 
 
@@ -134,10 +108,7 @@ def get_users():
     user_data = []
     for user in users:
         user_data.append(extract_user_data(user))
-    result = {
-        "result": user_data,
-        "status": HTTPStatus.OK
-    }
+    result = {"result": user_data, "status": HTTPStatus.OK}
     return make_response(jsonify(result), result["status"])
 
 
@@ -148,10 +119,7 @@ def get_user_presets(user_id):
     for preset in presets:
         if int(preset.creator_id) == user_id:
             user_presets.append(preset)
-    result = {
-        "result": user_presets,
-        "status": HTTPStatus.OK
-    }
+    result = {"result": user_presets, "status": HTTPStatus.OK}
     return make_response(jsonify(result), result["status"])
 
 
