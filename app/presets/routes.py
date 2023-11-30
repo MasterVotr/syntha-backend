@@ -23,7 +23,7 @@ def create():
     print(request_data)
     metadata = request_data["metadata"]
     data = request_data["data"]
-    name = metadata["name"]
+    name = metadata["preset_name"]
     creator_id = metadata["creator_id"]
     if User.query.filter_by(id=creator_id).first() is None:
         return make_response("Creator user not found", HTTPStatus.NOT_FOUND)
