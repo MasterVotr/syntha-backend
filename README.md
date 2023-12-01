@@ -2,9 +2,7 @@
 ## Francesco Colotti, Jakub Votrubec, Roos Zoutman
 ## CS-E4400 - Design of WWW Services (23/24)
 
-### [Frontend repo](https://github.com/thepihen/syntha)
-
-### Some random information:
+[Frontend repo](https://github.com/thepihen/syntha)
 
 ### Key challenges and learning moments:
 - learning new technologies (Vue js, Tone js, Flask)
@@ -14,7 +12,7 @@
 - [PyCharm](https://www.jetbrains.com/pycharm/)
 - [Python venv](https://docs.python.org/3/library/venv.html)
 - command line
-- Python libraries (in requirements.txt)
+- Python libraries (in `requirements.txt`)
 
 ## Project Setup
 
