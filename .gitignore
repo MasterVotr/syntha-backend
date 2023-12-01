@@ -25,6 +25,9 @@ coverage
 *.sln
 *.sw?
 
+# Database
+syntha_db.db
+*.db
 
 # Created by https://www.toptal.com/developers/gitignore/api/vue,vuejs,visualstudiocode,python
 # Edit at https://www.toptal.com/developers/gitignore?templates=vue,vuejs,visualstudiocode,python
