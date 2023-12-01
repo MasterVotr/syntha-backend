@@ -16,11 +16,21 @@
 
 ## Project Setup
 
-### production
+### Development environment
+```
+apt install python3.10
+apt install python3.10-venv
+python3 -m venv venv 
+source venv/bin/activate
+pip3 install -r requirements.txt
+```
+
+### Run project
+#### production
 ```sh
 gunicorn 'app:create_app()'
 ```
-### development
+#### development
 ```sh
 flask run
 ```
